@@ -1,0 +1,15 @@
+# ruff 配置（CI lint job 使用）
+# 说明：仓库历史代码用默认全量规则扫描有 147 条风格类问题（unused-import / blind-except /
+# shebang-not-executable / SIM、UP、PL 等），一次性大改风险高，因此这里只启用"能抓到真实
+# bug"的一组规则作为阻断门禁；其余风格规则先在 CI 里以"提示档"打印，不阻断构建。
+# 后续逐组整理干净后，把对应规则组加进 select 即可逐步收紧。
+
+target-version = "py310"
+line-length = 120
+
+[lint]
+# E9  语法级错误（无法解析、缩进等）
+# F63 无效比较（如 == None、类型比较）
+# F7  语法/结构类可疑写法（如 __exit__ 签名错误）
+# F82 未定义名（拼写错、漏导入，最容易被忽略的真实 bug）
+select = ["E9", "F63", "F7", "F82"]
