@@ -1,0 +1,102 @@
+# campus_basic.yaml — 标准仿真场景（全部为仿真数据）
+# 数据驱动：修改本文件即可改车辆数 / 停车区 / 初始电量，无需修改任何业务代码。
+# 车辆车位排布为"保安预排"结果，系统不控制车辆行驶。
+
+meta:
+  name: 校园共享电动车移动集群充电-基础仿真场景
+  version: 1.0.0
+  description: 全部为仿真数据；车辆、车位、电量、能耗、障碍、充电、时钟均为仿真，非真实部署。
+  brand: 校园共享电动车
+  simulation: true
+
+robot:
+  id: R01
+  start_base: { x: 70, y: 40 }
+  battery_capacity_kwh: 5.0
+  initial_soc: 100
+  move_energy_per_100m_kwh: 0.05
+  charge_efficiency: 0.95
+
+zones:
+  - id: A
+    name: A 停车区
+    bounds: { x_min: 0, x_max: 30, y_min: 0, y_max: 20 }
+    slots: 12
+    passable: true
+  - id: B
+    name: B 停车区
+    bounds: { x_min: 50, x_max: 90, y_min: 0, y_max: 20 }
+    slots: 10
+    passable: true
+  - id: C
+    name: C 停车区
+    bounds: { x_min: 110, x_max: 140, y_min: 0, y_max: 20 }
+    slots: 8
+    passable: true
+
+# 30 辆，按车位规则排列；含多辆低电量、1 辆离线(A03)、1 辆 stale(B04) 用于测试过滤逻辑。
+vehicles:
+  - { id: A01, zone: A, slot: 1,  x: 5,  y: 5,  soc: 72, status: parked,      online: true }
+  - { id: A02, zone: A, slot: 2,  x: 13, y: 5,  soc: 35, status: low_battery, online: true }
+  - { id: A03, zone: A, slot: 3,  x: 21, y: 5,  soc: 88, status: offline,     online: false }  # 离线测试样本
+  - { id: A04, zone: A, slot: 4,  x: 29, y: 5,  soc: 61, status: parked,      online: true }
+  - { id: A05, zone: A, slot: 5,  x: 5,  y: 11, soc: 22, status: low_battery, online: true }
+  - { id: A06, zone: A, slot: 6,  x: 13, y: 11, soc: 79, status: parked,      online: true }
+  - { id: A07, zone: A, slot: 7,  x: 21, y: 11, soc: 45, status: parked,      online: true }
+  - { id: A08, zone: A, slot: 8,  x: 29, y: 11, soc: 90, status: parked,      online: true }
+  - { id: A09, zone: A, slot: 9,  x: 5,  y: 17, soc: 15, status: low_battery, online: true }
+  - { id: A10, zone: A, slot: 10, x: 13, y: 17, soc: 68, status: parked,      online: true }
+  - { id: A11, zone: A, slot: 11, x: 21, y: 17, soc: 53, status: parked,      online: true }
+  - { id: A12, zone: A, slot: 12, x: 29, y: 17, soc: 8,  status: low_battery, online: true }
+
+  - { id: B01, zone: B, slot: 1,  x: 54, y: 6,  soc: 77, status: parked,      online: true }
+  - { id: B02, zone: B, slot: 2,  x: 62, y: 6,  soc: 41, status: parked,      online: true }
+  - { id: B03, zone: B, slot: 3,  x: 70, y: 6,  soc: 30, status: low_battery, online: true }
+  - { id: B04, zone: B, slot: 4,  x: 78, y: 6,  soc: 85, status: stale,       online: true }  # 陈旧数据测试样本
+  - { id: B05, zone: B, slot: 5,  x: 86, y: 6,  soc: 64, status: parked,      online: true }
+  - { id: B06, zone: B, slot: 6,  x: 54, y: 14, soc: 19, status: low_battery, online: true }
+  - { id: B07, zone: B, slot: 7,  x: 62, y: 14, soc: 92, status: parked,      online: true }
+  - { id: B08, zone: B, slot: 8,  x: 70, y: 14, soc: 56, status: parked,      online: true }
+  - { id: B09, zone: B, slot: 9,  x: 78, y: 14, soc: 48, status: parked,      online: true }
+  - { id: B10, zone: B, slot: 10, x: 86, y: 14, soc: 5,  status: low_battery, online: true }
+
+  - { id: C01, zone: C, slot: 1, x: 114, y: 6,  soc: 81, status: parked,      online: true }
+  - { id: C02, zone: C, slot: 2, x: 122, y: 6,  soc: 12, status: low_battery, online: true }
+  - { id: C03, zone: C, slot: 3, x: 130, y: 6,  soc: 70, status: parked,      online: true }
+  - { id: C04, zone: C, slot: 4, x: 138, y: 6,  soc: 38, status: parked,      online: true }
+  - { id: C05, zone: C, slot: 5, x: 114, y: 14, soc: 60, status: parked,      online: true }
+  - { id: C06, zone: C, slot: 6, x: 122, y: 14, soc: 27, status: low_battery, online: true }
+  - { id: C07, zone: C, slot: 7, x: 130, y: 14, soc: 95, status: parked,      online: true }
+  - { id: C08, zone: C, slot: 8, x: 138, y: 14, soc: 44, status: parked,      online: true }
+
+obstacles:
+  static:
+    - { id: OB1, type: flowerbed, x: 40,  y: 10, radius_m: 2.0 }
+    - { id: OB2, type: building,  x: 100, y: 12, radius_m: 3.0 }
+    - { id: OB3, type: lamp_post, x: 105, y: 30, radius_m: 0.5 }
+  # 可由 POST /api/demo/obstacle 动态添加的临时路障位，默认 inactive。
+  dynamic_slots:
+    - { id: TMP1, x: 45,  y: 22, active: false }
+    - { id: TMP2, x: 100, y: 22, active: false }
+    - { id: TMP3, x: 75,  y: 30, active: false }
+
+charging:
+  channels: 5
+  channel_ids: [CH1, CH2, CH3, CH4, CH5]
+  power_kw: 3.5
+  transfer_loss: 0.05
+
+scheduler:
+  max_per_batch: 5
+  weights:
+    low_soc: 0.35
+    avg_soc: 0.20
+    distance: 0.25
+    robot_energy: 0.20
+  target_soc: 80
+  refill_rule: nearest_zone_if_short
+
+simulation:
+  clock_source: backend
+  speed_options: [1, 10, 60]
+  time_format: ISO8601_UTC

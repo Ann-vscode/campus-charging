@@ -1,0 +1,28 @@
+# ============================================================
+# 校园共享电动车移动集群充电仿真系统 —— 本地仿真环境
+# 本文件启动一个 Mosquitto MQTT Broker，仅供本地仿真与联调使用。
+# 警告：允许匿名连接、无 TLS、无鉴权，禁止用于任何真实车辆接入或生产场景。
+# ============================================================
+version: "3.8"
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: campus-charging-mosquitto
+    restart: unless-stopped
+    ports:
+      # 仿真 MQTT 端口，宿主机 1883 映射到容器 1883
+      - "1883:1883"
+    volumes:
+      # 配置、持久化数据与日志均落到本地目录，便于仿真数据留存
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    # 内联生成配置，避免依赖仓库内额外的配置文件：
+    #   - listener 1883        : 监听仿真端口
+    #   - allow_anonymous true : 仿真环境允许匿名（仅本地）
+    #   - persistence true     : 开启持久化，仿真消息/会话落盘
+    command:
+      - sh
+      - -c
+      - 'printf "listener 1883\nallow_anonymous true\npersistence true\npersistence_location /mosquitto/data/\nlog_dest file /mosquitto/log/mosquitto.log\n" > /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf'

@@ -1,0 +1,188 @@
+{
+  "milestone": "R3.2",
+  "runs_per_zone": 3,
+  "trials": [
+    {
+      "run": 1,
+      "zone": "A 区",
+      "goal": [
+        1.5,
+        1.0
+      ],
+      "start": [
+        6.866,
+        1.084
+      ],
+      "end": [
+        1.388,
+        1.118
+      ],
+      "arrival_error_m": 0.163,
+      "elapsed_s": 65.5,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 1,
+      "zone": "B 区",
+      "goal": [
+        7.0,
+        1.0
+      ],
+      "start": [
+        1.388,
+        1.118
+      ],
+      "end": [
+        6.833,
+        1.093
+      ],
+      "arrival_error_m": 0.191,
+      "elapsed_s": 33.6,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 1,
+      "zone": "C 区",
+      "goal": [
+        12.5,
+        1.0
+      ],
+      "start": [
+        6.833,
+        1.093
+      ],
+      "end": [
+        12.353,
+        1.086
+      ],
+      "arrival_error_m": 0.17,
+      "elapsed_s": 41.2,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 2,
+      "zone": "A 区",
+      "goal": [
+        1.5,
+        1.0
+      ],
+      "start": [
+        12.353,
+        1.086
+      ],
+      "end": [
+        1.632,
+        1.089
+      ],
+      "arrival_error_m": 0.16,
+      "elapsed_s": 75.6,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 2,
+      "zone": "B 区",
+      "goal": [
+        7.0,
+        1.0
+      ],
+      "start": [
+        1.632,
+        1.089
+      ],
+      "end": [
+        6.908,
+        1.13
+      ],
+      "arrival_error_m": 0.16,
+      "elapsed_s": 62.0,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 2,
+      "zone": "C 区",
+      "goal": [
+        12.5,
+        1.0
+      ],
+      "start": [
+        6.908,
+        1.13
+      ],
+      "end": [
+        12.357,
+        1.091
+      ],
+      "arrival_error_m": 0.169,
+      "elapsed_s": 38.3,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 3,
+      "zone": "A 区",
+      "goal": [
+        1.5,
+        1.0
+      ],
+      "start": [
+        12.357,
+        1.091
+      ],
+      "end": [
+        1.605,
+        1.114
+      ],
+      "arrival_error_m": 0.155,
+      "elapsed_s": 95.8,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 3,
+      "zone": "B 区",
+      "goal": [
+        7.0,
+        1.0
+      ],
+      "start": [
+        1.605,
+        1.114
+      ],
+      "end": [
+        6.838,
+        1.097
+      ],
+      "arrival_error_m": 0.189,
+      "elapsed_s": 38.4,
+      "success": true,
+      "detail": "status=4"
+    },
+    {
+      "run": 3,
+      "zone": "C 区",
+      "goal": [
+        12.5,
+        1.0
+      ],
+      "start": [
+        6.838,
+        1.097
+      ],
+      "end": [
+        12.361,
+        1.088
+      ],
+      "arrival_error_m": 0.164,
+      "elapsed_s": 39.1,
+      "success": true,
+      "detail": "status=4"
+    }
+  ],
+  "success_rate": 1.0,
+  "max_arrival_error_m": 0.191
+}

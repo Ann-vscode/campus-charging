@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# Node / 前端构建
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# 本机运行产物与临时文件
+*.log
+*.bak
+*.tmp
+.pids/
+
+# 第三方参考仓库（克隆而来，可按 DEMO_GUIDE 5.2 重新拉取，不入库）
+refs/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

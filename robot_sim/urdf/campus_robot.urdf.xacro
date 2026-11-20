@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<!--
+  campus_robot.urdf.xacro - SIMULATED differential-drive robot for R3.1.
+  Self-contained (no turtlebot3 mesh dependency) so it reliably spawns.
+  ROS topics (SIMULATION): /cmd_vel, /odom, /imu, /scan.
+  Every link has inertial + collision so Gazebo/URDF parser is happy.
+  ASCII comments only; no non-ASCII inside XML.
+-->
+<robot name="campus_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <material name="body_blue"><color rgba="0.1 0.3 0.8 1.0"/></material>
+  <material name="wheel_black"><color rgba="0.05 0.05 0.05 1.0"/></material>
+  <material name="sensor_grey"><color rgba="0.6 0.6 0.6 1.0"/></material>
+
+  <!-- ================= base link ================= -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <mass value="3.0"/>
+      <inertia ixx="0.0157" ixy="0.0" ixz="0.0" iyy="0.0232" iyz="0.0" izz="0.0317"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry><box size="0.28 0.22 0.12"/></geometry>
+      <material name="body_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry><box size="0.28 0.22 0.10"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= left wheel ================= -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0 0.16 0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.00014" ixy="0.0" ixz="0.0" iyy="0.00014" iyz="0.0" izz="0.00025"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.03"/></geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.03"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= right wheel ================= -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0 -0.16 0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.00014" ixy="0.0" ixz="0.0" iyy="0.00014" iyz="0.0" izz="0.00025"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.03"/></geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.03"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= front caster (fixed, spherical) ================= -->
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_link"/>
+    <origin xyz="0.12 0 0.02" rpy="0 0 0"/>
+  </joint>
+  <link name="caster_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.02"/></geometry>
+      <material name="sensor_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.02"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= laser link ================= -->
+  <joint name="laser_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser_link"/>
+    <origin xyz="0.10 0 0.15" rpy="0 0 0"/>
+  </joint>
+  <link name="laser_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.00004" ixy="0.0" ixz="0.0" iyy="0.00004" iyz="0.0" izz="0.00004"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.06 0.06 0.04"/></geometry>
+      <material name="sensor_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.06 0.06 0.04"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= gazebo plugins ================= -->
+
+  <!-- differential drive: /cmd_vel -> /odom, wheel sep 0.32, dia 0.10 -->
+  <gazebo>
+    <plugin name="campus_diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <update_rate>50</update_rate>
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.32</wheel_separation>
+      <wheel_diameter>0.1</wheel_diameter>
+      <max_wheel_torque>20.0</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <command_topic>cmd_vel</command_topic>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+    </plugin>
+  </gazebo>
+
+  <!-- IMU sensor -> /imu -->
+  <gazebo reference="base_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>1</always_on>
+      <update_rate>100</update_rate>
+      <plugin name="campus_imu" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <remapping>~/out:=imu</remapping>
+        </ros>
+        <topic>imu</topic>
+        <body_name>base_link</body_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- 2D laser scan -> /scan -->
+  <gazebo reference="laser_link">
+    <sensor name="laser_sensor" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.05</min>
+          <max>3.0</max>
+          <resolution>0.01</resolution>
+          <noise><type>gaussian</type><mean>0.0</mean><stddev>0.01</stddev></noise>
+        </range>
+      </ray>
+      <plugin name="campus_laser" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>laser_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

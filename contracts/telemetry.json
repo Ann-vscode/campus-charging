@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campus-charging.local/contracts/telemetry.json",
+  "title": "校园共享电动车移动集群充电仿真系统 - 遥测与事件消息 Schema",
+  "description": "定义三类 WebSocket 消息：VehicleTelemetry、RobotTelemetry、TaskEvent。所有字段数据均为仿真数据，非真实车辆数据。顶层 oneOf 表示任意一条消息必须通过其中恰好一个定义。",
+  "x-version": "1.0.0",
+  "x-simulation": true,
+  "oneOf": [
+    { "$ref": "#/definitions/VehicleTelemetry" },
+    { "$ref": "#/definitions/RobotTelemetry" },
+    { "$ref": "#/definitions/TaskEvent" }
+  ],
+  "definitions": {
+    "Point2D": {
+      "title": "二维坐标点",
+      "description": "场景平面坐标 [x, y]（仿真数据，非真实车辆数据）",
+      "type": "array",
+      "items": { "type": "number", "description": "坐标分量（仿真数据，非真实车辆数据）", "example": 12.5 },
+      "minItems": 2,
+      "maxItems": 2,
+      "example": [12.5, 8.0]
+    },
+    "VehicleTelemetry": {
+      "title": "车辆遥测",
+      "description": "单辆校园共享电动车的一次遥测快照（仿真数据，非真实车辆数据）",
+      "type": "object",
+      "required": [
+        "vehicle_id",
+        "zone",
+        "slot",
+        "x",
+        "y",
+        "soc",
+        "status",
+        "timestamp",
+        "stale"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "vehicle_id": {
+          "type": "string",
+          "description": "车辆唯一标识；格式由场景配置决定（基础场景形如 A01/B04/C08），数据驱动，不得写死为固定模式（仿真数据，非真实车辆数据）",
+          "example": "A01"
+        },
+        "zone": {
+          "type": "string",
+          "description": "车辆所在停车分区（仿真数据，非真实车辆数据）",
+          "enum": ["A", "B", "C"],
+          "example": "A"
+        },
+        "slot": {
+          "type": "integer",
+          "description": "停车分区内车位编号，从 1 开始（仿真数据，非真实车辆数据）",
+          "minimum": 1,
+          "example": 3
+        },
+        "x": {
+          "type": "number",
+          "description": "车辆在场景坐标系中的 x 坐标（仿真数据，非真实车辆数据）",
+          "example": 12.5
+        },
+        "y": {
+          "type": "number",
+          "description": "车辆在场景坐标系中的 y 坐标（仿真数据，非真实车辆数据）",
+          "example": 8.0
+        },
+        "soc": {
+          "type": "number",
+          "description": "车辆电池荷电状态，取值范围 0-100 百分比（仿真数据，非真实车辆数据）",
+          "minimum": 0,
+          "maximum": 100,
+          "example": 34.0
+        },
+        "status": {
+          "type": "string",
+          "description": "车辆状态枚举，固定为 PARKED/SELECTED/DOCKING/CHARGING/CHARGED/STALE/OFFLINE（仿真数据，非真实车辆数据）",
+          "enum": [
+            "PARKED",
+            "SELECTED",
+            "DOCKING",
+            "CHARGING",
+            "CHARGED",
+            "STALE",
+            "OFFLINE"
+          ],
+          "example": "PARKED"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "该遥测的仿真采样时刻，UTC ISO8601（仿真数据，非真实车辆数据）",
+          "format": "date-time",
+          "example": "2026-11-18T09:30:00.000Z"
+        },
+        "stale": {
+          "type": "boolean",
+          "description": "遥测是否过期（超过阈值未刷新则视为 STALE），true 表示数据陈旧（仿真数据，非真实车辆数据）",
+          "example": false
+        }
+      }
+    },
+    "RobotTelemetry": {
+      "title": "机器人遥测",
+      "description": "充电机器人 R01 的一次遥测快照（仿真数据，非真实车辆数据）",
+      "type": "object",
+      "required": [
+        "robot_id",
+        "x",
+        "y",
+        "heading",
+        "speed",
+        "soc",
+        "status",
+        "planned_path",
+        "traveled_path",
+        "timestamp"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "robot_id": {
+          "type": "string",
+          "description": "机器人唯一标识，固定为 R01（仿真数据，非真实车辆数据）",
+          "example": "R01"
+        },
+        "x": {
+          "type": "number",
+          "description": "机器人在场景坐标系中的 x 坐标（仿真数据，非真实车辆数据）",
+          "example": 18.4
+        },
+        "y": {
+          "type": "number",
+          "description": "机器人在场景坐标系中的 y 坐标（仿真数据，非真实车辆数据）",
+          "example": 9.2
+        },
+        "heading": {
+          "type": "number",
+          "description": "机器人朝向角，单位度，取值范围 0-360（仿真数据，非真实车辆数据）",
+          "minimum": 0,
+          "maximum": 360,
+          "example": 90.0
+        },
+        "speed": {
+          "type": "number",
+          "description": "机器人当前线速度，单位 m/s，非负（仿真数据，非真实车辆数据）",
+          "minimum": 0,
+          "example": 0.6
+        },
+        "soc": {
+          "type": "number",
+          "description": "机器人储能荷电状态，取值范围 0-100 百分比（仿真数据，非真实车辆数据）",
+          "minimum": 0,
+          "maximum": 100,
+          "example": 82.0
+        },
+        "status": {
+          "type": "string",
+          "description": "机器人状态枚举，固定为 IDLE/NAVIGATING/REPLANNING/DOCKING/CHARGING/RETURNING/RECHARGING/FAULT（仿真数据，非真实车辆数据）",
+          "enum": [
+            "IDLE",
+            "NAVIGATING",
+            "REPLANNING",
+            "DOCKING",
+            "CHARGING",
+            "RETURNING",
+            "RECHARGING",
+            "FAULT"
+          ],
+          "example": "NAVIGATING"
+        },
+        "planned_path": {
+          "type": "array",
+          "description": "机器人规划路径点序列，元素为 [x,y] 坐标（仿真数据，非真实车辆数据）",
+          "items": { "$ref": "#/definitions/Point2D" },
+          "example": [[18.4, 9.2], [20.0, 9.2], [22.5, 10.0]]
+        },
+        "traveled_path": {
+          "type": "array",
+          "description": "机器人已行驶路径点序列，元素为 [x,y] 坐标（仿真数据，非真实车辆数据）",
+          "items": { "$ref": "#/definitions/Point2D" },
+          "example": [[10.0, 6.0], [14.2, 7.5], [18.4, 9.2]]
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "该遥测的仿真采样时刻，UTC ISO8601（仿真数据，非真实车辆数据）",
+          "format": "date-time",
+          "example": "2026-11-18T09:30:00.100Z"
+        }
+      }
+    },
+    "TaskEvent": {
+      "title": "任务事件",
+      "description": "仿真过程中产生的一条任务/调度事件（仿真数据，非真实车辆数据）",
+      "type": "object",
+      "required": [
+        "event_id",
+        "type",
+        "batch_id",
+        "vehicle_id",
+        "message",
+        "timestamp"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "description": "事件唯一标识，格式 E-<序号>（仿真数据，非真实车辆数据）",
+          "example": "E-000002"
+        },
+        "type": {
+          "type": "string",
+          "description": "事件类型枚举，固定为 SIM_STARTED/SIM_PAUSED/SIM_RESUMED/SIM_RESET/SPEED_CHANGED/BATCH_CREATED/TASK_ASSIGNED/DOCK_OK/DOCK_FAIL/CHARGE_DONE/VEHICLE_DEPARTED/OBSTACLE_DETECTED/REPLAN_TRIGGERED/LOW_ENERGY/RETURN_BASE/RECHARGE_DONE/FAULT（仿真数据，非真实车辆数据）",
+          "enum": [
+            "SIM_STARTED",
+            "SIM_PAUSED",
+            "SIM_RESUMED",
+            "SIM_RESET",
+            "SPEED_CHANGED",
+            "BATCH_CREATED",
+            "TASK_ASSIGNED",
+            "DOCK_OK",
+            "DOCK_FAIL",
+            "CHARGE_DONE",
+            "VEHICLE_DEPARTED",
+            "OBSTACLE_DETECTED",
+            "REPLAN_TRIGGERED",
+            "LOW_ENERGY",
+            "RETURN_BASE",
+            "RECHARGE_DONE",
+            "FAULT"
+          ],
+          "example": "CHARGE_DONE"
+        },
+        "batch_id": {
+          "type": "string",
+          "description": "所属充电批次标识，格式 B-<序号>（仿真数据，非真实车辆数据）",
+          "example": "B-0001"
+        },
+        "vehicle_id": {
+          "type": "string",
+          "description": "关联车辆唯一标识；格式由场景配置决定（基础场景形如 A01/B04/C08），数据驱动（仿真数据，非真实车辆数据）",
+          "example": "A01"
+        },
+        "message": {
+          "type": "string",
+          "description": "事件的人类可读描述，须体现仿真标注（仿真数据，非真实车辆数据）",
+          "example": "车辆 A01 充电至目标 SOC 80%（仿真数据）"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "事件发生时刻，UTC ISO8601（仿真数据，非真实车辆数据）",
+          "format": "date-time",
+          "example": "2026-11-18T09:30:00.100Z"
+        }
+      }
+    }
+  }
+}

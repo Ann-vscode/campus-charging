@@ -1,0 +1,90 @@
+name: CI
+
+# 触发：push / PR 到 main 及所有分支
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  # (a) 契约门禁：确保冻结契约存在且合法
+  contract-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 校验 contracts/telemetry.json 为合法 JSON
+        run: |
+          python3 -c "import json; json.load(open('contracts/telemetry.json', encoding='utf-8')); print('telemetry.json: valid JSON')"
+      - name: 校验 contracts/api.md 存在
+        run: |
+          if [ -f contracts/api.md ]; then
+            echo "api.md: exists"
+          else
+            echo "api.md: MISSING" && exit 1
+          fi
+
+  # (b) 后端测试：有测试则跑 pytest，无测试则提示跳过
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 运行 pytest（无测试则跳过）
+        run: |
+          if find . -type f \( -name 'test_*.py' -o -name '*_test.py' \) | grep -q .; then
+            python -m pip install --upgrade pip
+            pip install pytest
+            pytest -q
+          else
+            echo "未发现 pytest 测试用例，跳过 backend-test"
+          fi
+
+  # (c) 代码规范：Python 用 ruff、前端用 eslint，目录空时跳过
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python ruff（无 .py 文件则跳过）
+        run: |
+          if find . -type f -name '*.py' | grep -q .; then
+            pip install ruff
+            ruff check .
+          else
+            echo "未发现 Python 文件，跳过 ruff"
+          fi
+      - name: 前端 eslint（无前端工程则跳过）
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            npm ci
+            npx eslint . || true
+          else
+            echo "未发现 frontend/package.json，跳过 eslint"
+          fi
+
+  # (d) 前端构建：有 package.json 则 npm ci && npm run build，否则跳过
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: 构建前端（无 package.json 则跳过）
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            npm ci
+            npm run build
+          else
+            echo "未发现 frontend/package.json，跳过 build-frontend"
+          fi

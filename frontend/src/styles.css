@@ -1,0 +1,436 @@
+/* 校园共享电动车移动集群充电仿真系统 · 监控样式
+   面向答辩电脑与投影：大字号、高对比、清晰状态色。所有数据均为仿真模式。 */
+
+:root {
+  --bg: #0b1220;
+  --panel: #141e30;
+  --panel-2: #1a2740;
+  --border: #2b3d5c;
+  --text: #eaf2ff;
+  --muted: #9fb3d1;
+  --accent: #4da3ff;
+  --green: #2e9e5b;
+  --orange: #fb8c00;
+  --red: #e53935;
+  --cyan: #29b6f6;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { min-height: 100%; }
+
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 20% -10%, #1b2c4a 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 14px 18px 20px;
+}
+
+/* ---------------- 顶部标题与仿真标识 ---------------- */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  padding: 10px 18px;
+  background: linear-gradient(90deg, #16243c, #101a2c);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.title-block h1 {
+  margin: 0;
+  font-size: 27px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+.mode-banner {
+  margin-left: auto;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c62828, #ef6c00);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow: 0 0 0 3px rgba(255, 112, 67, 0.18);
+  white-space: nowrap;
+}
+
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  color: var(--muted);
+  width: 100%;
+}
+
+.header-meta b { color: #ffd54f; }
+
+.error-banner {
+  background: #4a1414;
+  border: 1px solid #ef5350;
+  color: #ffcdd2;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+/* ---------------- 布局 ---------------- */
+
+.dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(380px, 1fr);
+  grid-template-areas:
+    "map right"
+    "control right"
+    "events events";
+  gap: 14px;
+  align-items: start;
+}
+
+.slot-map { grid-area: map; min-width: 0; }
+.slot-right { grid-area: right; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.slot-control { grid-area: control; }
+.slot-events { grid-area: events; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.panel-title {
+  margin: 0 0 12px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.panel-sub { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+.tag-sim {
+  background: #b71c1c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.block-title {
+  margin: 14px 0 8px;
+  font-size: 15px;
+  color: #9cc9ff;
+  border-left: 4px solid var(--accent);
+  padding-left: 8px;
+}
+
+.muted { color: var(--muted); font-size: 13px; }
+
+/* ---------------- 地图 ---------------- */
+
+.map-wrap { width: 100%; }
+
+.campus-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #0f1a2d;
+  border-radius: 10px;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  align-items: center;
+}
+
+.map-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.map-legend i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.map-legend i.ring { background: transparent; border: 2px solid #fff; }
+.map-legend i.line-solid { width: 20px; height: 0; border-top: 3px solid #4be3a6; border-radius: 0; }
+.map-legend i.line-dash { width: 20px; height: 0; border-top: 3px dashed #8fbaff; border-radius: 0; }
+.legend-note { margin-left: auto; color: #ffab91; font-weight: 700; }
+
+/* ---------------- 任务面板 ---------------- */
+
+.batch-progress {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.batch-progress > div:first-child { display: flex; align-items: baseline; justify-content: space-between; }
+.label { font-size: 14px; color: var(--muted); }
+
+.progress-big { font-size: 40px; font-weight: 800; color: #ffd54f; line-height: 1.1; }
+.progress-big small { font-size: 20px; color: var(--muted); }
+
+.progress-track {
+  height: 12px;
+  background: #0c1526;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #263a59;
+}
+
+.progress-track.large { height: 16px; margin: 8px 0; }
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #29b6f6, #66bb6a);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.progress-fill.robot { background: linear-gradient(90deg, #7e57c2, #29b6f6); }
+
+.clock-line { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.current-task, .robot-box {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ct-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0; font-size: 15px; }
+
+.empty-box {
+  background: var(--panel-2);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  background: #455a64;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge.blue { background: #1565c0; }
+.badge.cyan { background: #00838f; }
+
+.soc-pill {
+  color: #0b1220;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.target-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+
+.target-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.target-list li.done { opacity: 0.72; }
+.target-list .tid { font-weight: 800; min-width: 44px; }
+.target-list .tzone { color: var(--muted); }
+.target-list li > .badge { margin-left: auto; }
+.target-list li.muted { display: block; }
+
+/* ---------------- 充电通道 ---------------- */
+
+.channel-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.channel-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-top: 4px solid #546e7a;
+  border-radius: 10px;
+  padding: 9px 10px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.channel-card.ch-charging { border-top-color: #29b6f6; }
+.channel-card.ch-done { border-top-color: #2e7d32; }
+.channel-card.ch-fault { border-top-color: #e53935; background: #2a1618; }
+.channel-card.ch-connecting { border-top-color: #ffb300; }
+
+.ch-head { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
+.ch-id { font-size: 17px; }
+.ch-head .badge { font-size: 12px; padding: 1px 7px; }
+.ch-vehicle { font-weight: 800; font-size: 17px; margin: 8px 0 2px; overflow: hidden; text-overflow: ellipsis; }
+.ch-soc { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+.ch-soc b { color: var(--text); font-size: 16px; }
+.ch-footer { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-top: 5px; }
+.ch-footer b { color: var(--text); }
+.hint { font-size: 13px; color: #ffb74d; margin: 10px 0 0; }
+
+/* ---------------- 控制条 ---------------- */
+
+.control-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding: 12px 16px;
+}
+
+.control-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.btn {
+  background: #263a59;
+  color: var(--text);
+  border: 1px solid #3d5a82;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+
+.btn:hover:not(:disabled) { background: #33527d; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.42; cursor: not-allowed; }
+
+.btn-primary { background: #2e7d32; border-color: #43a047; font-size: 17px; padding: 10px 20px; }
+.btn-primary:hover:not(:disabled) { background: #388e3c; }
+.btn-warn { background: #8d4e00; border-color: #ef6c00; }
+.btn-warn:hover:not(:disabled) { background: #a56000; }
+.btn-speed { padding: 7px 14px; min-width: 54px; }
+.btn-speed.active { background: #1565c0; border-color: #42a5f5; box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.3); }
+.control-label { color: var(--muted); font-size: 14px; }
+
+.control-status {
+  margin-left: auto;
+  font-size: 14px;
+  text-align: right;
+  line-height: 1.7;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9e9e9e;
+  margin-right: 6px;
+}
+
+.status-dot.mock { background: #ffd54f; }
+.status-dot.connected { background: #66bb6a; }
+.status-dot.connecting { background: #29b6f6; }
+.status-dot.disconnected, .status-dot.error { background: #ef5350; }
+
+/* ---------------- 事件日志 ---------------- */
+
+.event-filter { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; font-size: 14px; }
+
+.event-filter select {
+  background: #0f1a2d;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 14px;
+}
+
+.event-filter > span:last-child { margin-left: auto; }
+
+.event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-list::-webkit-scrollbar { width: 8px; }
+.event-list::-webkit-scrollbar-thumb { background: #34506f; border-radius: 8px; }
+
+.event-item {
+  display: grid;
+  grid-template-columns: 92px 108px 76px 1fr;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-2);
+  border-left: 3px solid #546e7a;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.ev-time { color: #9cc9ff; font-variant-numeric: tabular-nums; }
+.ev-type { font-weight: 800; color: #ffd54f; }
+.ev-vehicle { font-weight: 700; color: #b0bec5; }
+.ev-msg { color: #d7e3f4; }
+.ev-charge_done, .ev-dock_ok, .ev-return_base { border-left-color: #66bb6a; }
+.ev-dock_fail, .ev-fault, .ev-obstacle_detected { border-left-color: #ef5350; }
+.ev-task_assigned, .ev-batch_created, .ev-sim_started { border-left-color: #29b6f6; }
+.event-empty { display: block; padding: 14px; }
+
+/* ---------------- 页脚 ---------------- */
+
+.app-footer {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+.app-footer b { color: #ffab91; }
+
+/* ---------------- 投影/窄屏适配 ---------------- */
+
+@media (max-width: 1180px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-areas: "map" "right" "control" "events";
+  }
+  .channel-grid { grid-template-columns: repeat(5, minmax(120px, 1fr)); overflow-x: auto; }
+  .mode-banner { margin-left: 0; }
+}
+
+@media (min-width: 1600px) {
+  body { font-size: 17px; }
+  .panel-title { font-size: 22px; }
+}
